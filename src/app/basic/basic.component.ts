@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { from, fromEvent, interval, Observable, Observer, of, Subscription, timer } from 'rxjs';
 
 @Component({
@@ -6,7 +6,7 @@ import { from, fromEvent, interval, Observable, Observer, of, Subscription, time
   templateUrl: './basic.component.html',
   styleUrls: ['./basic.component.css']
 })
-export class BasicComponent implements OnInit {
+export class BasicComponent implements OnInit, OnDestroy {
 
   subscription$ = new Subscription();
 
@@ -58,6 +58,10 @@ export class BasicComponent implements OnInit {
   unsubscribe(): void {
     this.subscription$.unsubscribe();
     this.subscription$ = new Subscription();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe();
   }
 
 }
