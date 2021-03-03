@@ -1,6 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { from, fromEvent, interval, Observable, Subscription } from 'rxjs';
-import { delay, filter, first, last, map, take, tap } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { from, fromEvent, interval, Observable, Subject, Subscription } from 'rxjs';
+import { debounceTime, delay, filter, first, map, tap } from 'rxjs/operators';
+import { MatRipple } from '@angular/material/core';
 
 @Component({
   selector: 'app-operators',
@@ -8,7 +9,10 @@ import { delay, filter, first, last, map, take, tap } from 'rxjs/operators';
   styleUrls: ['./operators.component.css']
 })
 export class OperatorsComponent implements OnInit, OnDestroy {
+  @ViewChild(MatRipple, {static: false}) ripple?: MatRipple;
   subscription$ = new Subscription();
+  searchEntry$ = new Subject<string>();
+  searchInput = '';
 
   constructor() {
   }
@@ -87,6 +91,23 @@ export class OperatorsComponent implements OnInit, OnDestroy {
     }, 200);
   }
 
+  launchRipple(): void {
+    const rippleRef = this.ripple?.launch({
+      persistent: true,
+      centered: true
+    });
+    rippleRef?.fadeOut();
+  }
+
+  /*  debounceTimeClick(): void {
+      fromEvent<MouseEvent>(document, 'click')
+        .pipe(debounceTime(1000))
+        .subscribe((next: MouseEvent) => {
+          console.log('Click with debounceTime', next);
+          this.launchRipple();
+        });
+    }*/
+
   unsubscribe(): void {
     this.subscription$.unsubscribe();
     this.subscription$ = new Subscription();
@@ -96,4 +117,14 @@ export class OperatorsComponent implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
+  searchBy_usingDebounce($event: KeyboardEvent): void {
+    this.searchEntry$.next(this.searchInput);
+  }
+
+  debounceTimeSearch(): void {
+    this.searchEntry$
+      // realiza o evento do subscribe após X tempo sem nenhum evento emitido pelo Observable
+      .pipe(debounceTime(700))
+      .subscribe(next => console.log(next));
+  }
 }

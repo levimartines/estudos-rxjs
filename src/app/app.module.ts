@@ -9,6 +9,10 @@ import { FormsModule } from '@angular/forms';
 import { BasicComponent } from './basic/basic.component';
 import { MatButtonModule } from '@angular/material/button';
 import { OperatorsComponent } from './operators/operators.component';
+import { MatRippleModule } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -21,7 +25,11 @@ import { OperatorsComponent } from './operators/operators.component';
     BrowserAnimationsModule,
     FlexLayoutModule,
     MatButtonModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatRadioModule,
+    MatRippleModule,
     FormsModule
   ],
   providers: [{

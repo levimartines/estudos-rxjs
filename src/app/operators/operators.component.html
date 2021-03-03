@@ -7,5 +7,26 @@
   <br>
   <button mat-raised-button color="primary" (click)="takeClick()">Create Take</button>
   <br>
+  <!--  <button mat-raised-button color="primary" (click)="debounceTimeClick()">Create DebounceTime</button>
+    <br>-->
+  <button mat-raised-button color="primary" (click)="debounceTimeSearch()">DebounceTime Search</button>
+  <br>
   <button mat-raised-button color="warn" (click)="unsubscribe()">Unsubscribe</button>
+  <br>
+
 </div>
+
+<!--<div class="debounce-area"
+     mat-ripple
+     [matRippleCentered]="true"
+     matRippleColor="rgb(240, 166, 166, 0.4)">
+</div>-->
+
+<mat-divider></mat-divider>
+
+<mat-form-field>
+  <mat-label>Search by:</mat-label>
+  <input type="text" matInput autocomplete="off" (keyup)="searchBy_usingDebounce($event)" [(ngModel)]="searchInput">
+</mat-form-field>
+
+
