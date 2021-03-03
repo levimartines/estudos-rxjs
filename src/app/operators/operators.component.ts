@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { from, fromEvent, Subscription } from 'rxjs';
-import { delay, filter, map } from 'rxjs/operators';
+import { from, fromEvent, interval, Observable, Subscription } from 'rxjs';
+import { delay, filter, first, last, map, take, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-operators',
@@ -16,7 +16,7 @@ export class OperatorsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
   }
 
-  map(): void {
+  mapClick(): void {
     this.subscription$.add(from<number[]>([1, 2, 3, 4, 5, 6, 7])
       .pipe(
         map(project => project * 2),
@@ -32,14 +32,59 @@ export class OperatorsComponent implements OnInit, OnDestroy {
       .subscribe(next => console.log(next)));
   }
 
-  filter(): void {
+  filterClick(): void {
     this.subscription$.add(
-      from<number[]>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9 , 10])
+      from<number[]>([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
         .pipe(
+          // filter para filtrar (manter) os que retornarem true
           filter(next => next % 2 === 0),
+          // map para realizar alteração do valor
           map(next => next * 100)
         ).subscribe(next => console.log(next))
     );
+  }
+
+  tapClick(): void {
+    this.subscription$.add(interval(1000)
+      .pipe(
+        // tap para chamar alguma função
+        tap(next => console.log('Before filter : ' + next)),
+        filter(next => next % 2 === 0),
+        delay(1000)
+      )
+      .subscribe(next => console.warn('Final value: ' + next))
+    );
+  }
+
+  takeClick(): void {
+    const observable = new Observable(subscriber => {
+      for (let counter = 1; counter <= 20; counter++) {
+        setTimeout(() => subscriber.next(counter), counter * 200);
+      }
+      setTimeout(() => subscriber.complete(), 20000);
+    });
+
+    const subscription = observable
+      .pipe(
+        tap(next => console.log('Value before take: ' + next)),
+        // completa a subscription automaticamente após X elementos
+        // take(10)
+        first()
+        // se des-inscreve automaticamente após o complete() do observable
+        // last()
+      ).subscribe(
+        next => console.log('Subscription output: ' + next),
+        error => console.error(error),
+        () => console.log('Completed')
+      );
+
+    const interv = setInterval(() => {
+      console.log('Checking Subscription');
+      if (subscription.closed) {
+        console.warn('Subscription CLOSED');
+        clearInterval(interv);
+      }
+    }, 200);
   }
 
   unsubscribe(): void {
@@ -50,4 +95,5 @@ export class OperatorsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribe();
   }
+
 }
