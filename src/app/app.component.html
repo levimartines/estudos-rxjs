@@ -2,11 +2,10 @@
 
   <div fxFlex="20">
     <mat-radio-group [(ngModel)]="option" fxLayout="column" fxLayoutAlign="center start">
-      <mat-radio-button value="basic">Basic</mat-radio-button>
-      <br>
-      <mat-radio-button value="operators">Operators</mat-radio-button>
-      <br>
-      <mat-radio-button value="advanced">Advanced</mat-radio-button>
+      <ng-container *ngFor="let opt of options">
+        <mat-radio-button [id]="opt" [value]="opt">{{capitalizeFirstLetter(opt)}}</mat-radio-button>
+        <br>
+      </ng-container>
     </mat-radio-group>
 
   </div>
@@ -15,6 +14,7 @@
     <ng-container [ngSwitch]="option">
       <app-basic *ngSwitchCase="'basic'" fxFill></app-basic>
       <app-operators *ngSwitchCase="'operators'" fxFill></app-operators>
+      <app-async *ngSwitchCase="'async'" fxFill></app-async>
     </ng-container>
   </div>
 </div>

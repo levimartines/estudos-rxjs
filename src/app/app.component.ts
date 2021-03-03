@@ -7,5 +7,16 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'rxjs';
-  option = 'basic';
+  option = 'async';
+  options = [
+    'basic',
+    'operators',
+    'async',
+    'advanced'
+  ];
+
+  capitalizeFirstLetter(s: string): string {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
 }

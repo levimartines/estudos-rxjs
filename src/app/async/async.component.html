@@ -1,0 +1,28 @@
+<div fxFill fxLayout="column" fxLayoutAlign="center start">
+  <mat-card>
+    <mat-card-title>
+      Select the options bellow
+    </mat-card-title>
+
+    <mat-card-content>
+      <mat-selection-list color="primary">
+        <mat-list-option *ngFor="let opt of options$ | async" [selected]="opt.selected">
+          {{opt.option}}
+        </mat-list-option>
+      </mat-selection-list>
+    </mat-card-content>
+  </mat-card>
+
+  <br>
+  <mat-card>
+    <mat-card-actions>
+      <div *ngIf="user$ | async as user; else loadingUsers">
+        <p>Name: {{user?.name}}</p>
+        <p>Login: {{user?.login}}</p>
+      </div>
+      <ng-template #loadingUsers>
+        <mat-progress-spinner color="primary" mode="indeterminate"></mat-progress-spinner>
+      </ng-template>
+    </mat-card-actions>
+  </mat-card>
+</div>

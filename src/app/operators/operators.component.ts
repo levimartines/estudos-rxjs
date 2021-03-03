@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { from, fromEvent, interval, Observable, Subject, Subscription } from 'rxjs';
-import { debounceTime, delay, filter, first, map, tap } from 'rxjs/operators';
+import { from, fromEvent, interval, Observable, Subject, Subscription, timer } from 'rxjs';
+import { debounceTime, delay, filter, first, map, takeUntil, takeWhile, tap } from 'rxjs/operators';
 import { MatRipple } from '@angular/material/core';
 
 @Component({
@@ -91,13 +91,13 @@ export class OperatorsComponent implements OnInit, OnDestroy {
     }, 200);
   }
 
-  launchRipple(): void {
-    const rippleRef = this.ripple?.launch({
-      persistent: true,
-      centered: true
-    });
-    rippleRef?.fadeOut();
-  }
+  /*  launchRipple(): void {
+      const rippleRef = this.ripple?.launch({
+        persistent: true,
+        centered: true
+      });
+      rippleRef?.fadeOut();
+    }*/
 
   /*  debounceTimeClick(): void {
       fromEvent<MouseEvent>(document, 'click')
@@ -107,15 +107,6 @@ export class OperatorsComponent implements OnInit, OnDestroy {
           this.launchRipple();
         });
     }*/
-
-  unsubscribe(): void {
-    this.subscription$.unsubscribe();
-    this.subscription$ = new Subscription();
-  }
-
-  ngOnDestroy(): void {
-    this.unsubscribe();
-  }
 
   searchBy_usingDebounce($event: KeyboardEvent): void {
     this.searchEntry$.next(this.searchInput);
@@ -127,4 +118,37 @@ export class OperatorsComponent implements OnInit, OnDestroy {
       .pipe(debounceTime(700))
       .subscribe(next => console.log(next));
   }
+
+  takeWhileClick(): void {
+    from<number[]>([1, 2, 3, 4, 5, 6, 7])
+      // takeWhile espera receber um predicado (true/false)
+      .pipe(takeWhile(((value, index) => (value < 6))))
+      .subscribe(
+        next => console.log(next),
+        error => console.error(error),
+        () => console.log('Completed')
+      );
+  }
+
+  takeUntilClick(): void {
+    const dueTime$ = timer(5000);
+    interval(500)
+      // takeUntil espera um outro Observable ( e quando esse emitir um evento, ele para de capturar )
+      .pipe(takeUntil(dueTime$))
+      .subscribe(
+        next => console.log(next),
+        error => console.error(error),
+        () => console.log('Completed')
+      );
+  }
+
+  unsubscribe(): void {
+    this.subscription$.unsubscribe();
+    this.subscription$ = new Subscription();
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe();
+  }
+
 }
